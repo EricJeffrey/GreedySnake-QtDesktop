@@ -15,11 +15,14 @@ class MapGraphicsView : public QGraphicsView
     Q_OBJECT
 public:
     static ulong MOVE_FORWARD_INTERVAL;
+    static int SCORE_PER_FRUIT;
+
     MapGraphicsView();
 
 signals:
     void snakeDead();
     void gameRestart();
+    void fruitEaten();
 
 public slots:
     void snakeMoveForward();

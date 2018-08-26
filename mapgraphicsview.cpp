@@ -4,13 +4,16 @@
 
 int MapGraphicsView::MAP_WIDTH = 500;
 int MapGraphicsView::MAP_HEIGHT = 500;
-int MapGraphicsView::WALL_WIDTH = 3;
+int MapGraphicsView::WALL_WIDTH = 2;
+int MapGraphicsView::SCORE_PER_FRUIT = 10;
 ulong MapGraphicsView::MOVE_FORWARD_INTERVAL = 80;
 
 QString MapGraphicsView::WINDOW_TITLE = QString("Greedy Snake");
 
 MapGraphicsView::MapGraphicsView()
 {
+    setContentsMargins(0, 0, 0, 0);
+
     resize(MAP_WIDTH + (WALL_WIDTH << 1) + 3, MAP_HEIGHT + (WALL_WIDTH << 1) + 3);
     setWindowTitle(WINDOW_TITLE);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -56,6 +59,7 @@ void MapGraphicsView::snakeMoveForward()
         if (isFruitEaten()){
             snake.growUp();
             f.generate(generateFruitPos());
+            emit fruitEaten();
         }
         drawSnakeAndFruit();
         update();
@@ -66,9 +70,6 @@ void MapGraphicsView::keyReleaseEvent(QKeyEvent *ev)
 {
     int key = ev->key();
     if (key >= Qt::Key_Left && key <= Qt::Key_Down){
-        if (ev->timestamp() - laReleaseTime <= MOVE_FORWARD_INTERVAL)
-            return;
-        laReleaseTime = ev->timestamp();
         int targetDirection = Snake::DOWN;
         switch (key) {
         case Qt::Key_Left:
@@ -84,7 +85,11 @@ void MapGraphicsView::keyReleaseEvent(QKeyEvent *ev)
             targetDirection = Snake::DOWN;
             break;
         }
+        if (ev->timestamp() - laReleaseTime <= MOVE_FORWARD_INTERVAL){
+            snake.moveForward();
+        }
         snake.changeDirection(targetDirection);
+        laReleaseTime = ev->timestamp();
     }
     QGraphicsView::keyReleaseEvent(ev);
 }
@@ -131,13 +136,14 @@ QPoint MapGraphicsView::generateFruitPos()
     qsrand(time(nullptr));
     int x, y;
     while(true){
-        x = qrand() % (MAP_WIDTH - 10);
-        y = qrand() % (MAP_HEIGHT - 10);
+        int mw = MAP_WIDTH - 20, mh = MAP_HEIGHT - 20;
+        x = qrand() % mw;
+        y = qrand() % mh;
         x /= 10; x *= 10; y /= 10; y *= 10;
-        if (x > (MAP_WIDTH >> 1))
-            x -= MAP_WIDTH;
-        if (y > (MAP_HEIGHT >> 1))
-            y -= MAP_HEIGHT;
+        if (x > (mw >> 1))
+            x -= mw;
+        if (y > (mh >> 1))
+            y -= mh;
         bool onBody = false;
         for (QPoint tmp : snake.getBody()){
             if (tmp.x() == x && tmp.y() == y){
