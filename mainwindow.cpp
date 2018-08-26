@@ -1,47 +1,46 @@
+#include <QDebug>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QPointer>
+#include <QTimer>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-}
-
-MainWindow::MainWindow(MapGraphicsView *gv, QWidget *parent) :
-    QMainWindow (parent),
-    ui(new Ui::MainWindow)
-{
-    ui->setupUi(this);
     currentScore = 0;
+    setWindowTitle("GreedySnake");
     setContentsMargins(0, 0, 0, 0);
 
-    scoreTextLabel = new QLabel("SCORE: ");
-    scoreTextLabel->setFont(QFont("castellar", 17));
-    scoreTextLabel->setFixedHeight(30);
+    scoreTextLabel.setText("SCORE :");
+    scoreTextLabel.setFont(QFont("Lucida Calligraphy", 17));
+    scoreTextLabel.setFixedHeight(30);
 
-    scoreLabel = new QLabel("0");
-    scoreLabel->setFont(QFont("castellar", 17));
-    scoreLabel->setFixedHeight(30);
+    scoreLabel.setText("0");
+    scoreLabel.setFont(QFont("Lucida Calligraphy", 17));
+    scoreLabel.setFixedHeight(30);
 
-    QHBoxLayout *bottomLayout = new QHBoxLayout();
+    QPointer<QHBoxLayout> bottomLayout(new QHBoxLayout());
     bottomLayout->setContentsMargins(5, 0, 5, 5);
-    bottomLayout->addWidget(scoreTextLabel);
-    bottomLayout->addWidget(scoreLabel);
+    bottomLayout->addWidget(&scoreTextLabel);
+    bottomLayout->addWidget(&scoreLabel);
 
-    QVBoxLayout *outlayout = new QVBoxLayout();
+    QPointer<QVBoxLayout> outlayout(new QVBoxLayout());
     outlayout->setContentsMargins(5, 5, 5, 0);
-    outlayout->addWidget(gv);
+    outlayout->addWidget(&gameView);
     outlayout->addLayout(bottomLayout);
 
-    QWidget *cenWidget = new QWidget(this);
+    QPointer<QWidget> cenWidget(new QWidget(this));
+    cenWidget->setAttribute(Qt::WA_DeleteOnClose);
     cenWidget->setLayout(outlayout);
 
     setCentralWidget(cenWidget);
     setFixedSize(507 + 10, 507 + 30 + 6 + 10);
+
 }
 
 MainWindow::~MainWindow()
@@ -52,12 +51,32 @@ MainWindow::~MainWindow()
 void MainWindow::fruitEatenScored()
 {
     currentScore += MapGraphicsView::SCORE_PER_FRUIT;
-    scoreLabel->setText(QString::fromStdString(std::to_string(currentScore)));
+    scoreLabel.setText(QString::fromStdString(std::to_string(currentScore)));
 }
 
 void MainWindow::resetScore()
 {
     currentScore = 0;
-    scoreLabel->setText("0");
+    scoreLabel.setText("0");
+}
+
+void MainWindow::startGame()
+{
+    show();
+    timer.setInterval(static_cast<int>(MapGraphicsView::MOVE_FORWARD_INTERVAL));
+    QObject::connect(&timer, &QTimer::timeout, &gameView, &MapGraphicsView::snakeMoveForward);
+    QObject::connect(&gameView, &MapGraphicsView::snakeDead, &timer, &QTimer::stop);
+    QObject::connect(&gameView, SIGNAL(gameRestart()), &timer, SLOT(start()));
+    QObject::connect(&gameView, &MapGraphicsView::fruitEaten, this, &MainWindow::fruitEatenScored);
+    QObject::connect(&gameView, &MapGraphicsView::gameRestart, this, &MainWindow::resetScore);
+    QObject::connect(&gameView, &MapGraphicsView::gameEnd, this, &MainWindow::close);
+
+    timer.start();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    emit gameWindowClosed();
+    QMainWindow::closeEvent(event);
 }
 

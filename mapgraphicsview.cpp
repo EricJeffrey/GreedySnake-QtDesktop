@@ -26,6 +26,10 @@ MapGraphicsView::MapGraphicsView()
     laReleaseTime = 0;
 }
 
+MapGraphicsView::~MapGraphicsView()
+{
+}
+
 void MapGraphicsView::snakeMoveForward()
 {
     snake.moveForward();
@@ -50,7 +54,7 @@ void MapGraphicsView::snakeMoveForward()
             emit gameRestart();
         }
         else {
-            exit(0);
+            emit gameEnd();
         }
     }
     else {
@@ -127,13 +131,13 @@ void MapGraphicsView::drawSnakeAndFruit()
             sc->addRect(p.x(), p.y(), opw, opw, QPen(Qt::lightGray), QBrush(Qt::gray));
     }
     QPoint fpos = f.getPos();
-    fruitItem = sc->addEllipse(fpos.x(), fpos.y(), \
+    sc->addEllipse(fpos.x(), fpos.y(), \
                                Fruit::FRUIT_WIDTH, Fruit::FRUIT_HEIGHT, QPen(Qt::red), QBrush(Qt::red));
 }
 
 QPoint MapGraphicsView::generateFruitPos()
 {
-    qsrand(time(nullptr));
+    qsrand(static_cast<uint>(time(nullptr)));
     int x, y;
     while(true){
         int mw = MAP_WIDTH - 20, mh = MAP_HEIGHT - 20;

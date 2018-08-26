@@ -16,70 +16,74 @@ Snake::Snake(QObject *parent) : QObject(parent)
     body.push_back(QPoint(0, 0));
 }
 
+Snake::~Snake()
+{
+}
+
 void Snake::growUp()
 {
     if (body.size() == 0) {
         qDebug() << Q_FUNC_INFO << "body size zero";
     }
     else if (body.size() == 1){
-        QPoint *p = new QPoint(body.first());
+        QPoint p(body.first());
 
         switch (curDirection) {
         case LEFT:
-            p->setX(p->x() + ONE_PART_WIDTH);
+            p.setX(p.x() + ONE_PART_WIDTH);
             break;
         case RIGHT:
-            p->setX(p->x() - ONE_PART_WIDTH);
+            p.setX(p.x() - ONE_PART_WIDTH);
             break;
         case UP:
-            p->setY(p->y() + ONE_PART_WIDTH);
+            p.setY(p.y() + ONE_PART_WIDTH);
             break;
         case DOWN:
-            p->setY(p->y() - ONE_PART_WIDTH);
+            p.setY(p.y() - ONE_PART_WIDTH);
             break;
         }
-        body.push_back(*p);
+        body.push_back(p);
     }
     else {
         QPoint tailp = body.last(), tailforwardp = *(body.end() - 2);
-        QPoint *np = new QPoint(tailp);
+        QPoint np(tailp);
         if (tailp.x() - tailforwardp.x() == 0){
             int z = tailp.y() - tailforwardp.y();
             if (z > 0)
-                np->setY(np->y() + ONE_PART_WIDTH);
+                np.setY(np.y() + ONE_PART_WIDTH);
             else
-                np->setY(np->y() - ONE_PART_WIDTH);
+                np.setY(np.y() - ONE_PART_WIDTH);
         }
         else {
             int z = tailp.x() - tailforwardp.x();
             if (z > 0)
-                np->setX(np->x() + ONE_PART_WIDTH);
+                np.setX(np.x() + ONE_PART_WIDTH);
             else
-                np->setX(np->x() - ONE_PART_WIDTH);
+                np.setX(np.x() - ONE_PART_WIDTH);
         }
-        body.push_back(*np);
+        body.push_back(np);
     }
 }
 
 void Snake::moveForward()
 {
-    QPoint *p = new QPoint(body.first());
+    QPoint p(body.first());
     switch (curDirection) {
     case LEFT:
-        p->setX(p->x() - ONE_PART_WIDTH);
+        p.setX(p.x() - ONE_PART_WIDTH);
         break;
     case RIGHT:
-        p->setX(p->x() + ONE_PART_WIDTH);
+        p.setX(p.x() + ONE_PART_WIDTH);
         break;
     case UP:
-        p->setY(p->y() - ONE_PART_WIDTH);
+        p.setY(p.y() - ONE_PART_WIDTH);
         break;
     case DOWN:
-        p->setY(p->y() + ONE_PART_WIDTH);
+        p.setY(p.y() + ONE_PART_WIDTH);
         break;
     }
     body.pop_back();
-    body.push_front(*p);
+    body.push_front(p);
 }
 
 void Snake::changeDirection(int targetDirection)

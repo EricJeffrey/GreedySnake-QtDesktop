@@ -1,41 +1,25 @@
 #include "mainwindow.h"
 #include "mapgraphicsview.h"
+#include "settingwindow.h"
 #include <QApplication>
 #include <QTimer>
 
-void startGame();
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-//    startGame();
+    SettingWindow *launchWindow = new SettingWindow();
+    QObject::connect(launchWindow, static_cast<void (SettingWindow:: *)()>(&SettingWindow::gameStart), [launchWindow]() {
 
-    MapGraphicsView *gameView = new MapGraphicsView();
-    MainWindow *mainwindow = new MainWindow(gameView);
-    mainwindow->show();
+        MainWindow *mainwindow = new MainWindow();
+        QObject::connect(mainwindow, &MainWindow::gameWindowClosed, launchWindow, &SettingWindow::show);
+        mainwindow->setAttribute(Qt::WA_DeleteOnClose);
+        mainwindow->startGame();
 
-    QTimer *timer = new QTimer();
-    timer->setInterval(static_cast<int>(MapGraphicsView::MOVE_FORWARD_INTERVAL));
-    QObject::connect(timer, &QTimer::timeout, gameView, &MapGraphicsView::snakeMoveForward);
-    QObject::connect(gameView, &MapGraphicsView::snakeDead, timer, &QTimer::stop);
-    QObject::connect(gameView, SIGNAL(gameRestart()), timer, SLOT(start()));
-    QObject::connect(gameView, &MapGraphicsView::fruitEaten, mainwindow, &MainWindow::fruitEatenScored);
-    QObject::connect(gameView, &MapGraphicsView::gameRestart, mainwindow, &MainWindow::resetScore);
-
-    timer->start();
+    });
+    launchWindow->setAttribute(Qt::WA_DeleteOnClose);
+    launchWindow->show();
 
     return a.exec();
 }
 
-void startGame(){
-    MapGraphicsView *view = new MapGraphicsView();
-    view->show();
-
-    QTimer *timer = new QTimer();
-    timer->setInterval(static_cast<int>(MapGraphicsView::MOVE_FORWARD_INTERVAL));
-    QObject::connect(timer, &QTimer::timeout, view, &MapGraphicsView::snakeMoveForward);
-    QObject::connect(view, &MapGraphicsView::snakeDead, timer, &QTimer::stop);
-    QObject::connect(view, SIGNAL(gameRestart()), timer, SLOT(start()));
-
-    timer->start();
-}

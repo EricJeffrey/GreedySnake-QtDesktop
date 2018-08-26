@@ -27,13 +27,15 @@ SOURCES += \
         mainwindow.cpp \
     snake.cpp \
     mapgraphicsview.cpp \
-    fruit.cpp
+    fruit.cpp \
+    settingwindow.cpp
 
 HEADERS += \
         mainwindow.h \
     snake.h \
     mapgraphicsview.h \
-    fruit.h
+    fruit.h \
+    settingwindow.h
 
 FORMS += \
         mainwindow.ui

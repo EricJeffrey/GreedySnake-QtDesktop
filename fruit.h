@@ -12,7 +12,7 @@ public:
     static int FRUIT_HEIGHT;
 
     explicit Fruit(QObject *parent = nullptr);
-
+    ~Fruit();
     void generate(QPoint p);
     QPoint getPos() const;
 

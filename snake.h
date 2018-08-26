@@ -13,6 +13,7 @@ public:
     static int ONE_PART_WIDTH;
 
     explicit Snake(QObject *parent = nullptr);
+    ~Snake();
     void growUp();
     void moveForward();
     void changeDirection(int targetDirection);

@@ -18,10 +18,12 @@ public:
     static int SCORE_PER_FRUIT;
 
     MapGraphicsView();
+    ~MapGraphicsView();
 
 signals:
     void snakeDead();
     void gameRestart();
+    void gameEnd();
     void fruitEaten();
 
 public slots:
@@ -40,7 +42,6 @@ private:
     static QString WINDOW_TITLE;
     static int MAP_WIDTH, MAP_HEIGHT, WALL_WIDTH;
 
-    QGraphicsEllipseItem *fruitItem;
     Snake snake;
     Fruit f;
     ulong laReleaseTime;

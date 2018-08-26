@@ -5,6 +5,7 @@
 
 #include <QLabel>
 #include <QMainWindow>
+#include <QTimer>
 
 namespace Ui {
 class MainWindow;
@@ -16,19 +17,27 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
-    MainWindow(MapGraphicsView *gv, QWidget *parent = nullptr);
     ~MainWindow();
+
+signals:
+    void gameWindowClosed();
 
 public slots:
     void fruitEatenScored();
     void resetScore();
+    void startGame();
 
 private:
     Ui::MainWindow *ui;
-    QLabel *scoreTextLabel;
-    QLabel *scoreLabel;
+    QLabel scoreTextLabel;
+    QLabel scoreLabel;
+    MapGraphicsView gameView;
+    QTimer timer;
     int currentScore;
 
+
+protected:
+    void closeEvent(QCloseEvent *event);
 };
 
 #endif // MAINWINDOW_H
