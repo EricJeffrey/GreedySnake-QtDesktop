@@ -1,5 +1,6 @@
 #include <QDebug>
 #include "mainwindow.h"
+#include "settingwindow.h"
 #include "ui_mainwindow.h"
 
 #include <QHBoxLayout>
@@ -17,11 +18,11 @@ MainWindow::MainWindow(QWidget *parent) :
     setContentsMargins(0, 0, 0, 0);
 
     scoreTextLabel.setText("SCORE :");
-    scoreTextLabel.setFont(QFont("Lucida Calligraphy", 17));
+    scoreTextLabel.setFont(QFont(SettingWindow::SETTING_FONT_FAMILY, SettingWindow::SETTING_FONT_SIZE));
     scoreTextLabel.setFixedHeight(30);
 
     scoreLabel.setText("0");
-    scoreLabel.setFont(QFont("Lucida Calligraphy", 17));
+    scoreLabel.setFont(QFont(SettingWindow::SETTING_FONT_FAMILY, SettingWindow::SETTING_FONT_SIZE));
     scoreLabel.setFixedHeight(30);
 
     QPointer<QHBoxLayout> bottomLayout(new QHBoxLayout());
@@ -62,7 +63,6 @@ void MainWindow::resetScore()
 
 void MainWindow::startGame()
 {
-    show();
     timer.setInterval(static_cast<int>(MapGraphicsView::MOVE_FORWARD_INTERVAL));
     QObject::connect(&timer, &QTimer::timeout, &gameView, &MapGraphicsView::snakeMoveForward);
     QObject::connect(&gameView, &MapGraphicsView::snakeDead, &timer, &QTimer::stop);
@@ -72,6 +72,16 @@ void MainWindow::startGame()
     QObject::connect(&gameView, &MapGraphicsView::gameEnd, this, &MainWindow::close);
 
     timer.start();
+    show();
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *ev)
+{
+    if (ev->key() == Qt::Key_Escape){
+        close();
+        return;
+    }
+    QMainWindow::keyReleaseEvent(ev);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

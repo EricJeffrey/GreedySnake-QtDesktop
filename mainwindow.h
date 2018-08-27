@@ -27,6 +27,9 @@ public slots:
     void resetScore();
     void startGame();
 
+protected:
+    void keyReleaseEvent(QKeyEvent *ev);
+
 private:
     Ui::MainWindow *ui;
     QLabel scoreTextLabel;
