@@ -16,9 +16,14 @@ class MapGraphicsView : public QGraphicsView
 public:
     static ulong MOVE_FORWARD_INTERVAL;
     static int SCORE_PER_FRUIT;
+    static QColor SNAKE_HEAD_COLOR;
+    static QColor SNAKE_BODY_COLOR;
+    static QColor FRUIT_COLOR;
+    static QColor WALL_COLOR;
 
     MapGraphicsView();
     ~MapGraphicsView();
+    void restartGame();
 
 signals:
     void snakeDead();

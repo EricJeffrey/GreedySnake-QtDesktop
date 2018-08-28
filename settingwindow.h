@@ -1,6 +1,8 @@
 #ifndef STARTSETTINGWINDOW_H
 #define STARTSETTINGWINDOW_H
 
+#include "mylabel.h"
+
 #include <QKeyEvent>
 #include <QLabel>
 #include <QMainWindow>
@@ -24,18 +26,23 @@ signals:
 public slots:
     void startGame();
     void changeSnakeMoveSpeed(int value);
+    QColor showColor();
 
 protected:
     void keyReleaseEvent(QKeyEvent *ev);
 
 private:
     static int SPEED_VALUE_MAX;
+    static int MYLABEL_HEIGHT;
+
     QPushButton startGameButton;
     QPushButton exitButton;
 
     QLabel speedLabel;
     QSpinBox speedSpin;
     QSlider speedSlider;
+    QLabel snakeHeadColorLabel;
+    MyLabel snakeHeadColorSeletor;
 
     void closeEvent(QCloseEvent *ev) override;
 };

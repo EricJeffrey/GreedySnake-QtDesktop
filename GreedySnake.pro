@@ -28,14 +28,16 @@ SOURCES += \
     snake.cpp \
     mapgraphicsview.cpp \
     fruit.cpp \
-    settingwindow.cpp
+    settingwindow.cpp \
+    mylabel.cpp
 
 HEADERS += \
         mainwindow.h \
     snake.h \
     mapgraphicsview.h \
     fruit.h \
-    settingwindow.h
+    settingwindow.h \
+    mylabel.h
 
 FORMS += \
         mainwindow.ui

@@ -5,6 +5,7 @@
 
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMessageBox>
 #include <QPointer>
 #include <QTimer>
 
@@ -65,7 +66,7 @@ void MainWindow::startGame()
 {
     timer.setInterval(static_cast<int>(MapGraphicsView::MOVE_FORWARD_INTERVAL));
     QObject::connect(&timer, &QTimer::timeout, &gameView, &MapGraphicsView::snakeMoveForward);
-    QObject::connect(&gameView, &MapGraphicsView::snakeDead, &timer, &QTimer::stop);
+    QObject::connect(&gameView, &MapGraphicsView::snakeDead, this, &snakeDeadHandler);
     QObject::connect(&gameView, SIGNAL(gameRestart()), &timer, SLOT(start()));
     QObject::connect(&gameView, &MapGraphicsView::fruitEaten, this, &MainWindow::fruitEatenScored);
     QObject::connect(&gameView, &MapGraphicsView::gameRestart, this, &MainWindow::resetScore);
@@ -75,10 +76,38 @@ void MainWindow::startGame()
     show();
 }
 
+void MainWindow::snakeDeadHandler()
+{
+    timer.stop();
+    if (QMessageBox::Ok == QMessageBox::question(
+                this,
+                "Oops~",
+                "Your snake is dead, try again?",
+                QMessageBox::Ok,
+                QMessageBox::Cancel)){
+        gameView.restartGame();
+        timer.start();
+    }
+    else {
+        close();
+    }
+}
+
 void MainWindow::keyReleaseEvent(QKeyEvent *ev)
 {
     if (ev->key() == Qt::Key_Escape){
-        close();
+        timer.stop();
+        if (QMessageBox::Ok == QMessageBox::question(
+                    this,
+                    "Exit",
+                    "Stop Game and Return?",
+                    QMessageBox::Ok,
+                    QMessageBox::Cancel)){
+            close();
+        }
+        else {
+            timer.start();
+        }
         return;
     }
     QMainWindow::keyReleaseEvent(ev);

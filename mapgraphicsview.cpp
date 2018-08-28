@@ -8,6 +8,11 @@ int MapGraphicsView::WALL_WIDTH = 2;
 int MapGraphicsView::SCORE_PER_FRUIT = 10;
 ulong MapGraphicsView::MOVE_FORWARD_INTERVAL = 150;
 
+QColor MapGraphicsView::SNAKE_HEAD_COLOR = QColor(200, 200, 200);
+QColor MapGraphicsView::SNAKE_BODY_COLOR = QColor(130, 130, 130);
+QColor MapGraphicsView::FRUIT_COLOR = QColor(255, 0, 0);
+QColor MapGraphicsView::WALL_COLOR = QColor(60, 60, 60);
+
 QString MapGraphicsView::WINDOW_TITLE = QString("Greedy Snake");
 
 MapGraphicsView::MapGraphicsView()
@@ -17,8 +22,6 @@ MapGraphicsView::MapGraphicsView()
 
     resize(MAP_WIDTH + (WALL_WIDTH << 1) + 3, MAP_HEIGHT + (WALL_WIDTH << 1) + 3);
     setWindowTitle(WINDOW_TITLE);
-//    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-//    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     setScene(new QGraphicsScene());
     drawWall();
@@ -31,6 +34,17 @@ MapGraphicsView::~MapGraphicsView()
 {
 }
 
+void MapGraphicsView::restartGame()
+{
+
+    scene()->clear();
+    drawWall();
+    snake.reset();
+    f.generate(generateFruitPos());
+    drawSnakeAndFruit();
+}
+
+
 void MapGraphicsView::snakeMoveForward()
 {
     snake.moveForward();
@@ -41,22 +55,6 @@ void MapGraphicsView::snakeMoveForward()
     }
     if (isSnakeDead()){
         emit snakeDead();
-        if (QMessageBox::Ok == QMessageBox::information(
-                    this,
-                    "Oops~",
-                    "Your snake is dead QAQ, try again?",
-                    QMessageBox::Ok,
-                    QMessageBox::Cancel)) {
-            sc->clear();
-            drawWall();
-            snake.reset();
-            f.generate(generateFruitPos());
-            drawSnakeAndFruit();
-            emit gameRestart();
-        }
-        else {
-            emit gameEnd();
-        }
     }
     else {
         sc->clear();
@@ -105,7 +103,7 @@ void MapGraphicsView::drawWall()
     if (sc != nullptr){
         for (int i = 1; i <= WALL_WIDTH; i++){
             sc->addRect(-(MAP_WIDTH >> 1) - i, -(MAP_HEIGHT >> 1) - i, \
-                        MAP_WIDTH + (i << 1), MAP_HEIGHT + (i << 1), QPen(Qt::darkGray));
+                        MAP_WIDTH + (i << 1), MAP_HEIGHT + (i << 1), QPen(WALL_COLOR));
         }
     }
 }
@@ -127,13 +125,13 @@ void MapGraphicsView::drawSnakeAndFruit()
     for (int i = 0; i < snakeBody.size(); i++){
         QPoint p = snakeBody[i];
         if (i == 0)
-            sc->addRect(p.x(), p.y(), opw, opw, QPen(Qt::lightGray), QBrush(Qt::lightGray));
+            sc->addRect(p.x(), p.y(), opw, opw, QPen(SNAKE_HEAD_COLOR), QBrush(SNAKE_HEAD_COLOR));
         else
-            sc->addRect(p.x(), p.y(), opw, opw, QPen(Qt::lightGray), QBrush(Qt::gray));
+            sc->addRect(p.x(), p.y(), opw, opw, QPen(SNAKE_BODY_COLOR), QBrush(SNAKE_BODY_COLOR));
     }
     QPoint fpos = f.getPos();
     sc->addEllipse(fpos.x(), fpos.y(), \
-                               Fruit::FRUIT_WIDTH, Fruit::FRUIT_HEIGHT, QPen(Qt::red), QBrush(Qt::red));
+                               Fruit::FRUIT_WIDTH, Fruit::FRUIT_HEIGHT, QPen(FRUIT_COLOR), QBrush(FRUIT_COLOR));
 }
 
 QPoint MapGraphicsView::generateFruitPos()
