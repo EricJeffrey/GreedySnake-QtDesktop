@@ -12,6 +12,7 @@ QColor MapGraphicsView::SNAKE_HEAD_COLOR = QColor(200, 200, 200);
 QColor MapGraphicsView::SNAKE_BODY_COLOR = QColor(130, 130, 130);
 QColor MapGraphicsView::FRUIT_COLOR = QColor(255, 0, 0);
 QColor MapGraphicsView::WALL_COLOR = QColor(60, 60, 60);
+QColor MapGraphicsView::BACKGROUND_COLOR = QColor(Qt::white);
 
 QString MapGraphicsView::WINDOW_TITLE = QString("Greedy Snake");
 
@@ -19,6 +20,7 @@ MapGraphicsView::MapGraphicsView()
 {
     setContentsMargins(0, 0, 0, 0);
     setStyleSheet("padding:0px;border:0px");
+    setBackgroundColor(BACKGROUND_COLOR);
 
     resize(MAP_WIDTH + (WALL_WIDTH << 1) + 3, MAP_HEIGHT + (WALL_WIDTH << 1) + 3);
     setWindowTitle(WINDOW_TITLE);
@@ -42,6 +44,14 @@ void MapGraphicsView::restartGame()
     snake.reset();
     f.generate(generateFruitPos());
     drawSnakeAndFruit();
+}
+
+void MapGraphicsView::setBackgroundColor(QColor c)
+{
+    setStyleSheet(QString("background-color:rgb(%1, %2, %3);")
+                  .arg(c.red())
+                  .arg(c.green())
+                  .arg(c.blue()));
 }
 
 

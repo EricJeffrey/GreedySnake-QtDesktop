@@ -20,10 +20,12 @@ public:
     static QColor SNAKE_BODY_COLOR;
     static QColor FRUIT_COLOR;
     static QColor WALL_COLOR;
+    static QColor BACKGROUND_COLOR;
 
     MapGraphicsView();
     ~MapGraphicsView();
     void restartGame();
+    void setBackgroundColor(QColor c);
 
 signals:
     void snakeDead();

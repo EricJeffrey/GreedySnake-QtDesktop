@@ -34,6 +34,7 @@ protected:
 private:
     static int SPEED_VALUE_MAX;
     static int MYLABEL_HEIGHT;
+    static int MYLABEL_WIDTH;
 
     QPushButton startGameButton;
     QPushButton exitButton;
@@ -42,7 +43,16 @@ private:
     QSpinBox speedSpin;
     QSlider speedSlider;
     QLabel snakeHeadColorLabel;
-    MyLabel snakeHeadColorSeletor;
+    MyLabel snakeHeadColorSelector;
+    QLabel snakeBodyColorLabel;
+    MyLabel snakeBodyColorSelector;
+    QLabel fruitColorLabel;
+    MyLabel fruitColorSelector;
+    QLabel wallColorLabel;
+    MyLabel wallColorSelector;
+    QLabel mapBackgroundColorLabel;
+    MyLabel mapBackgroundSelector;
+
 
     void closeEvent(QCloseEvent *ev) override;
 };

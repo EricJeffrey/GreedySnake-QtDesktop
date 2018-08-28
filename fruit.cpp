@@ -1,8 +1,8 @@
 #include <QDebug>
 #include "fruit.h"
 
-int Fruit::FRUIT_HEIGHT = 10;
-int Fruit::FRUIT_WIDTH = 10;
+int Fruit::FRUIT_HEIGHT = 9;
+int Fruit::FRUIT_WIDTH = 9;
 
 Fruit::Fruit(QObject *parent) : QObject(parent) {}
 

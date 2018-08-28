@@ -11,6 +11,7 @@ QString SettingWindow::SETTING_FONT_FAMILY("Lucida Calligraphy");
 int SettingWindow::SETTING_FONT_SIZE = 17;
 int SettingWindow::SPEED_VALUE_MAX = 320;
 int SettingWindow::MYLABEL_HEIGHT = 25;
+int SettingWindow::MYLABEL_WIDTH = 40;
 
 SettingWindow::SettingWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -44,32 +45,100 @@ SettingWindow::SettingWindow(QWidget *parent) : QMainWindow(parent)
     speedBox->addWidget(&speedSlider);
     speedBox->addWidget(&speedSpin);
 
-    // snake head body and fruit color
-    snakeHeadColorLabel.setText("snake head color :");
-    snakeHeadColorLabel.setFont(QFont(SETTING_FONT_FAMILY, SETTING_FONT_SIZE));
-    snakeHeadColorSeletor.setBackgroundColor(MapGraphicsView::SNAKE_HEAD_COLOR);
-    snakeHeadColorSeletor.setFixedHeight(MYLABEL_HEIGHT);
-    connect(&snakeHeadColorSeletor, &MyLabel::clicked, [this]()->void{
+    // fruit color
+    fruitColorLabel.setText("fruit color :");
+    fruitColorLabel.setFont(QFont(SETTING_FONT_FAMILY, SETTING_FONT_SIZE));
+    fruitColorSelector.setFixedSize(MYLABEL_WIDTH, MYLABEL_HEIGHT);
+    fruitColorSelector.setBackgroundColor(MapGraphicsView::FRUIT_COLOR);
+    connect(&fruitColorSelector, &MyLabel::clicked, [this]() -> void{
                 QColor c = QColorDialog::getColor(Qt::white, this);
                 if (c.isValid()){
-                    this->snakeHeadColorSeletor.setBackgroundColor(c);
+                    this->fruitColorSelector.setBackgroundColor(c);
+                    MapGraphicsView::FRUIT_COLOR = c;
+                }
+            });
+    QPointer<QHBoxLayout> fruitColorLayout(new QHBoxLayout());
+    fruitColorLayout->addWidget(&fruitColorLabel);
+    fruitColorLayout->addWidget(&fruitColorSelector);
+
+    // snake head color
+    snakeHeadColorLabel.setText("snake head color :");
+    snakeHeadColorLabel.setFont(QFont(SETTING_FONT_FAMILY, SETTING_FONT_SIZE));
+    snakeHeadColorSelector.setBackgroundColor(MapGraphicsView::SNAKE_HEAD_COLOR);
+    snakeHeadColorSelector.setFixedSize(MYLABEL_WIDTH, MYLABEL_HEIGHT);
+    connect(&snakeHeadColorSelector, &MyLabel::clicked, [this]()->void{
+                QColor c = QColorDialog::getColor(Qt::white, this);
+                if (c.isValid()){
+                    this->snakeHeadColorSelector.setBackgroundColor(c);
                     MapGraphicsView::SNAKE_HEAD_COLOR = c;
                 }
     });
     QPointer<QHBoxLayout> headColorLayout(new QHBoxLayout());
     headColorLayout->addWidget(&snakeHeadColorLabel);
-    headColorLayout->addWidget(&snakeHeadColorSeletor);
+    headColorLayout->addWidget(&snakeHeadColorSelector);
+
+    // snake body color
+    snakeBodyColorLabel.setText("snake body color :");
+    snakeBodyColorLabel.setFont(QFont(SETTING_FONT_FAMILY, SETTING_FONT_SIZE));
+    snakeBodyColorSelector.setBackgroundColor(MapGraphicsView::SNAKE_BODY_COLOR);
+    snakeBodyColorSelector.setFixedSize(MYLABEL_WIDTH, MYLABEL_HEIGHT);
+    connect(&snakeBodyColorSelector, &MyLabel::clicked, [this]()->void{
+                QColor c = QColorDialog::getColor(Qt::white, this);
+                if (c.isValid()){
+                    this->snakeBodyColorSelector.setBackgroundColor(c);
+                    MapGraphicsView::SNAKE_BODY_COLOR = c;
+                }
+    });
+    QPointer<QHBoxLayout> bodyColorLayout(new QHBoxLayout());
+    bodyColorLayout->addWidget(&snakeBodyColorLabel);
+    bodyColorLayout->addWidget(&snakeBodyColorSelector);
+
+    // map wall color
+    wallColorLabel.setText("wall color :");
+    wallColorLabel.setFont(QFont(SETTING_FONT_FAMILY, SETTING_FONT_SIZE));
+    wallColorSelector.setBackgroundColor(MapGraphicsView::WALL_COLOR);
+    wallColorSelector.setFixedSize(MYLABEL_WIDTH, MYLABEL_HEIGHT);
+    connect(&wallColorSelector, &MyLabel::clicked, [this]()->void{
+                QColor c = QColorDialog::getColor(Qt::white, this);
+                if (c.isValid()){
+                    this->wallColorSelector.setBackgroundColor(c);
+                    MapGraphicsView::WALL_COLOR = c;
+                }
+    });
+    QPointer<QHBoxLayout> wallColorLayout(new QHBoxLayout());
+    wallColorLayout->addWidget(&wallColorLabel);
+    wallColorLayout->addWidget(&wallColorSelector);
+
+    // map background color
+    mapBackgroundColorLabel.setText("map background color :");
+    mapBackgroundColorLabel.setFont(QFont(SETTING_FONT_FAMILY, SETTING_FONT_SIZE));
+    mapBackgroundSelector.setBackgroundColor(MapGraphicsView::BACKGROUND_COLOR);
+    mapBackgroundSelector.setFixedSize(MYLABEL_WIDTH, MYLABEL_HEIGHT);
+    connect(&mapBackgroundSelector, &MyLabel::clicked, [this]()->void{
+                QColor c = QColorDialog::getColor(Qt::white, this);
+                if (c.isValid()){
+                    this->mapBackgroundSelector.setBackgroundColor(c);
+                    MapGraphicsView::BACKGROUND_COLOR = c;
+                }
+    });
+    QPointer<QHBoxLayout> mapBackgroundLayout(new QHBoxLayout());
+    mapBackgroundLayout->addWidget(&mapBackgroundColorLabel);
+    mapBackgroundLayout->addWidget(&mapBackgroundSelector);
 
     // central widget
     QPointer<QVBoxLayout> outlayout(new QVBoxLayout());
     outlayout->addLayout(headColorLayout);
+    outlayout->addLayout(bodyColorLayout);
+    outlayout->addLayout(fruitColorLayout);
+    outlayout->addLayout(wallColorLayout);
+    outlayout->addLayout(mapBackgroundLayout);
     outlayout->addLayout(speedBox);
     outlayout->addLayout(bottomLayout);
     QWidget *cenWidget = new QWidget(this);
     cenWidget->setAttribute(Qt::WA_DeleteOnClose);
     cenWidget->setLayout(outlayout);
 
-    resize(250, 250);
+    resize(400, 420);
     setWindowTitle("Setting");
     setCentralWidget(cenWidget);
 }
