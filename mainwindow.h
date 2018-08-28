@@ -24,7 +24,6 @@ signals:
 
 public slots:
     void fruitEatenScored();
-    void resetScore();
     void startGame();
     void snakeDeadHandler();
 

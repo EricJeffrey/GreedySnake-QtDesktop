@@ -38,7 +38,6 @@ MapGraphicsView::~MapGraphicsView()
 
 void MapGraphicsView::restartGame()
 {
-
     scene()->clear();
     drawWall();
     snake.reset();
@@ -99,7 +98,7 @@ void MapGraphicsView::keyReleaseEvent(QKeyEvent *ev)
             break;
         }
         if (ev->timestamp() - laReleaseTime <= MOVE_FORWARD_INTERVAL){
-            snake.moveForward();
+            snakeMoveForward();
         }
         snake.changeDirection(targetDirection);
         laReleaseTime = ev->timestamp();

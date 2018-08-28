@@ -56,20 +56,12 @@ void MainWindow::fruitEatenScored()
     scoreLabel.setText(QString::fromStdString(std::to_string(currentScore)));
 }
 
-void MainWindow::resetScore()
-{
-    currentScore = 0;
-    scoreLabel.setText("0");
-}
-
 void MainWindow::startGame()
 {
     timer.setInterval(static_cast<int>(MapGraphicsView::MOVE_FORWARD_INTERVAL));
     QObject::connect(&timer, &QTimer::timeout, &gameView, &MapGraphicsView::snakeMoveForward);
     QObject::connect(&gameView, &MapGraphicsView::snakeDead, this, &snakeDeadHandler);
-    QObject::connect(&gameView, SIGNAL(gameRestart()), &timer, SLOT(start()));
     QObject::connect(&gameView, &MapGraphicsView::fruitEaten, this, &MainWindow::fruitEatenScored);
-    QObject::connect(&gameView, &MapGraphicsView::gameRestart, this, &MainWindow::resetScore);
     QObject::connect(&gameView, &MapGraphicsView::gameEnd, this, &MainWindow::close);
 
     timer.start();
@@ -86,6 +78,8 @@ void MainWindow::snakeDeadHandler()
                 QMessageBox::Ok,
                 QMessageBox::Cancel)){
         gameView.restartGame();
+        currentScore = 0;
+        scoreLabel.setText("0");
         timer.start();
     }
     else {

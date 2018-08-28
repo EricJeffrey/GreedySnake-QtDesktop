@@ -7,7 +7,7 @@
 #include <QSpinBox>
 #include <QSpinBox>
 
-QString SettingWindow::SETTING_FONT_FAMILY("Lucida Calligraphy");
+QString SettingWindow::SETTING_FONT_FAMILY("Jokerman");
 int SettingWindow::SETTING_FONT_SIZE = 17;
 int SettingWindow::SPEED_VALUE_MAX = 320;
 int SettingWindow::MYLABEL_HEIGHT = 25;
